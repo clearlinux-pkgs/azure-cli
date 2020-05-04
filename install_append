@@ -1,0 +1,11 @@
+extra_pkgs="azure-cli-command_modules-nspkg azure-cli-core azure-cli-nspkg azure-cli-telemetry azure-cli-testsdk"
+
+for pkg in $extra_pkgs; do
+    pushd src/$pkg
+    python3 -tt setup.py build  install --root=%{buildroot}
+    popd
+done
+
+mkdir -p %{buildroot}/bin
+printf "#!/usr/bin/env bash\nAZ_INSTALLER=RPM PYTHONPATH=/usr/bin/python -sm azure.cli \"\$@\"" > %{buildroot}/bin/az
+chmod 755 %{buildroot}/bin/az
