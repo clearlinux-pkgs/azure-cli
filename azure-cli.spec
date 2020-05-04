@@ -4,31 +4,35 @@
 #
 Name     : azure-cli
 Version  : 2.5.0
-Release  : 2
+Release  : 3
 URL      : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Summary  : Microsoft Azure Command-Line Tools
 Group    : Development/Tools
-License  : BSD-2-Clause MIT
+License  : MIT
 Requires: azure-cli-bin = %{version}-%{release}
 Requires: azure-cli-license = %{version}-%{release}
 Requires: azure-cli-python = %{version}-%{release}
 Requires: azure-cli-python3 = %{version}-%{release}
-Requires: azure-nspkg
-Requires: pip
-Requires: requests
-Requires: setuptools
-Requires: wheel
-BuildRequires : azure-nspkg
+Requires: cryptography
+Requires: jsondiff
+Requires: paramiko
+Requires: pyOpenSSL
+Requires: pytz
 BuildRequires : buildreq-distutils3
-BuildRequires : pip
-BuildRequires : requests
-BuildRequires : setuptools
-BuildRequires : wheel
+BuildRequires : cryptography
+BuildRequires : jsondiff
+BuildRequires : paramiko
+BuildRequires : pyOpenSSL
+BuildRequires : pytz
 
 %description
-A great cloud needs great tools; we're excited to introduce Azure CLI,
- our next generation multi-platform command line experience for Azure.
+===================
+        
+        A great cloud needs great tools; we're excited to introduce *Azure CLI*, our next generation multi-platform command line experience for Azure.
+        
+        Usage
+        =====
 
 %package bin
 Summary: bin components for the azure-cli package.
@@ -162,15 +166,15 @@ python3 components for the azure-cli package.
 
 
 %prep
-%setup -q -n azure-cli-azure-cli-2.5.0
-cd %{_builddir}/azure-cli-azure-cli-2.5.0
+%setup -q -n azure-cli-2.5.0
+cd %{_builddir}/azure-cli-2.5.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1588615217
+export SOURCE_DATE_EPOCH=1588618728
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -180,43 +184,19 @@ export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 export MAKEFLAGS=%{?_smp_mflags}
-pushd src/azure-cli
 python3 setup.py build
 
-popd
-## build_append content
-extra_pkgs="azure-cli-command_modules-nspkg azure-cli-core azure-cli-nspkg azure-cli-telemetry azure-cli-testsdk"
-
-for pkg in $extra_pkgs; do
-pushd src/$pkg
-python3 setup.py build
-popd
-done
-## build_append end
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/azure-cli
-cp %{_builddir}/azure-cli-azure-cli-2.5.0/LICENSE %{buildroot}/usr/share/package-licenses/azure-cli/54a77c8707aad5e56ac001d78c221c860ad5a7d0
-cp %{_builddir}/azure-cli-azure-cli-2.5.0/src/azure-cli/LICENSE.txt %{buildroot}/usr/share/package-licenses/azure-cli/7d8a62cc5b0bc6fd21840d3804a5d62b9e6f1366
-cp %{_builddir}/azure-cli-azure-cli-2.5.0/src/azure-cli/azure/cli/command_modules/appservice/fabric_license %{buildroot}/usr/share/package-licenses/azure-cli/34710b3b270a12abfe1210d0f2c022491365c095
-pushd src/azure-cli
+cp %{_builddir}/azure-cli-2.5.0/LICENSE.txt %{buildroot}/usr/share/package-licenses/azure-cli/7d8a62cc5b0bc6fd21840d3804a5d62b9e6f1366
 python3 -tt setup.py build  install --root=%{buildroot}
-popd
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
 ## Remove excluded files
 rm -f %{buildroot}/usr/bin/az.bat
-## install_append content
-extra_pkgs="azure-cli-command_modules-nspkg azure-cli-core azure-cli-nspkg azure-cli-telemetry azure-cli-testsdk"
-
-for pkg in $extra_pkgs; do
-pushd src/$pkg
-python3 -tt setup.py build  install --root=%{buildroot}
-popd
-done
-## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -228,8 +208,6 @@ done
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/azure-cli/34710b3b270a12abfe1210d0f2c022491365c095
-/usr/share/package-licenses/azure-cli/54a77c8707aad5e56ac001d78c221c860ad5a7d0
 /usr/share/package-licenses/azure-cli/7d8a62cc5b0bc6fd21840d3804a5d62b9e6f1366
 
 %files python
