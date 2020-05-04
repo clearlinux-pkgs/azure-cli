@@ -4,7 +4,7 @@
 #
 Name     : azure-cli
 Version  : 2.5.0
-Release  : 1
+Release  : 2
 URL      : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Summary  : Microsoft Azure Command-Line Tools
@@ -170,7 +170,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1588614181
+export SOURCE_DATE_EPOCH=1588615217
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -181,7 +181,7 @@ export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 export MAKEFLAGS=%{?_smp_mflags}
 pushd src/azure-cli
-python3 setup.py build  ||:
+python3 setup.py build
 
 popd
 ## build_append content
@@ -206,6 +206,8 @@ popd
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
+## Remove excluded files
+rm -f %{buildroot}/usr/bin/az.bat
 ## install_append content
 extra_pkgs="azure-cli-command_modules-nspkg azure-cli-core azure-cli-nspkg azure-cli-telemetry azure-cli-testsdk"
 
@@ -214,10 +216,6 @@ pushd src/$pkg
 python3 -tt setup.py build  install --root=%{buildroot}
 popd
 done
-
-mkdir -p %{buildroot}/bin
-printf "#!/usr/bin/env bash\nAZ_INSTALLER=RPM PYTHONPATH=/usr/bin/python -sm azure.cli \"\$@\"" > %{buildroot}/bin/az
-chmod 755 %{buildroot}/bin/az
 ## install_append end
 
 %files
@@ -225,9 +223,7 @@ chmod 755 %{buildroot}/bin/az
 
 %files bin
 %defattr(-,root,root,-)
-/bin/az
 /usr/bin/az
-/usr/bin/az.bat
 /usr/bin/az.completion.sh
 
 %files license
