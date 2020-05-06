@@ -4,7 +4,7 @@
 #
 Name     : azure-cli
 Version  : 2.5.0
-Release  : 4
+Release  : 5
 URL      : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/cb/e2/68dce3a5cd798faa54e105411902ab9db1f54ea5774c78b3d54e6a38df1d/azure-cli-2.5.0.tar.gz
 Summary  : Microsoft Azure Command-Line Tools
@@ -15,18 +15,29 @@ Requires: azure-cli-license = %{version}-%{release}
 Requires: azure-cli-python = %{version}-%{release}
 Requires: azure-cli-python3 = %{version}-%{release}
 Requires: azure-cli-core
+Requires: colorama
 Requires: cryptography
 Requires: jsondiff
 Requires: knack
 Requires: paramiko
 Requires: pyOpenSSL
+Requires: python-mock
 Requires: pytz
+Requires: requests
+Requires: six
+Requires: websocket_client
+Requires: xmltodict
 BuildRequires : buildreq-distutils3
+BuildRequires : colorama
 BuildRequires : cryptography
 BuildRequires : jsondiff
 BuildRequires : paramiko
 BuildRequires : pyOpenSSL
+BuildRequires : python-mock
 BuildRequires : pytz
+BuildRequires : requests
+BuildRequires : six
+BuildRequires : xmltodict
 
 %description
 ===================
@@ -176,7 +187,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1588628178
+export SOURCE_DATE_EPOCH=1588781468
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -201,6 +212,8 @@ echo ----[ mark ]----
 rm -f %{buildroot}/usr/bin/az.bat
 rm -f %{buildroot}/usr/lib/python3.8/site-packages/azure/__init__.py
 rm -f %{buildroot}/usr/lib/python3.8/site-packages/azure/__pycache__/__init__.cpython-38.pyc
+rm -f %{buildroot}/usr/lib/python3.8/site-packages/azure/cli/__init__.py
+rm -f %{buildroot}/usr/lib/python3.8/site-packages/azure/cli/__pycache__/__init__.cpython-38.pyc
 
 %files
 %defattr(-,root,root,-)

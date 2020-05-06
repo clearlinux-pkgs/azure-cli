@@ -3,3 +3,5 @@
 /usr/bin/az.bat
 /usr/lib/python3.8/site-packages/azure/__init__.py
 /usr/lib/python3.8/site-packages/azure/__pycache__/__init__.cpython-38.pyc
+/usr/lib/python3.8/site-packages/azure/cli/__init__.py
+/usr/lib/python3.8/site-packages/azure/cli/__pycache__/__init__.cpython-38.pyc
